@@ -67,6 +67,8 @@ class UrlsController < ApplicationController
     if stored_url.nil?
       render json: { "status": 404, "error": "Not Found" }, status: 404
     else
+      stored_url.add_visit()
+      stored_url.save
       redirect_to stored_url.original_url, status: 301
     end
   end
@@ -98,7 +100,6 @@ class UrlsController < ApplicationController
     short_url = encode(new_entry.id) unless new_entry.id.nil?
     new_entry.short_url = short_url
     new_entry.save
-    puts new_entry.errors.messages
     if new_entry.errors.messages.length > 0
       return { status: 500, errors: new_entry.errors.messages }
     else

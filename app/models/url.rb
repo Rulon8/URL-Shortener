@@ -17,4 +17,9 @@ class Url < ApplicationRecord
   def as_json(options={})
     super(only: [:title,:short_url,:original_url,:visit_count])
   end
+
+  # Adds 1 to visit count.
+  def add_visit
+    self.visit_count += 1
+  end
 end
