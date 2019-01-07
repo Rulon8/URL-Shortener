@@ -12,7 +12,7 @@ class UrlsController < ApplicationController
   #   if successful
   #   # => {"short_url": "eDj3k"}
   #
-  #   if unsuccesful
+  #   if unsuccessful
   #   # => {"status":500,"errors":{"original_url":["invalid original url"]}}
   #
   # Returns a JSON object with either the stored or the new shortened
@@ -32,6 +32,33 @@ class UrlsController < ApplicationController
       render json: short_url, status: 500
     else
       render json: short_url
+    end
+  end
+
+  # Checks if received short url is already stored in the database and
+  # can be used to redirect the user.
+  #
+  # short_url - The short version of a URL generated previously by the
+  # app.
+  #
+  # Examples
+  #
+  #   if successful
+  #   # => HTTP Redirection
+  #
+  #   if unsuccessful
+  #   # => {"status":404,"error":"Not Found"}
+  #
+  # Redirects the user to the corresponding original URL using HTTP
+  # status 301 if the short_url is stored in the database. Otherwise
+  # returns a JSON object with a 404 message.
+  def show
+    short_url = params[:short_url]
+    stored_url = Url.where(short_url: short_url).first
+    if stored_url.nil?
+      render json: { "status": 404, "error": "Not Found" }, status: 404
+    else
+      redirect_to stored_url.original_url, status: 301
     end
   end
 
