@@ -71,6 +71,16 @@ class UrlsController < ApplicationController
     end
   end
 
+  # Looks for the top 100 most visited URLs, ordered by visit count.
+  #
+  # Returns a JSON object that includes the title, short URL, original
+  # URL and visit count of each of the top most visited URLs. If there
+  # are less than 100 URLs stored in the system returns all of them.
+  def top
+    top_urls = Url.order(:visit_count).limit(100)
+    render json: top_urls
+  end
+
   private
 
   # Creates a new URL entry in the database. The entry must first be created
