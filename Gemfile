@@ -43,3 +43,12 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+
+# Use Sidekiq to create background workers
+gem 'sidekiq'
+
+# Use HTTParty to crawl URLs
+gem 'httparty'
+
+# Use Nokogiri to parse HTML
+gem 'nokogiri'
