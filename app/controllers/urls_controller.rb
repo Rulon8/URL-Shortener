@@ -1,3 +1,5 @@
+require 'socket'
+
 class UrlsController < ApplicationController
   # Base62 alphabet containing the valid characters for a short URL
   ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
@@ -10,7 +12,7 @@ class UrlsController < ApplicationController
   # Examples
   #
   #   if successful
-  #   # => {"short_url": "eDj3k"}
+  #   # => {"short_url": "localhost/eDj3k"}
   #
   #   if unsuccessful
   #   # => {"status":500,"errors":{"original_url":["invalid original url"]}}
@@ -29,8 +31,15 @@ class UrlsController < ApplicationController
       short_url = { short_url: stored_entry.short_url }
     end
     if short_url.has_key?(:errors)
+      # If there are errors show 500 error
       render json: short_url, status: 500
     else
+      # Consider ports other than 80, eg. rails default port 3000
+      if request.port == 80
+        short_url[:short_url] = request.host + '/' + short_url[:short_url]
+      else
+        short_url[:short_url] = request.host + ':' + request.port.to_s + '/' + short_url[:short_url]
+      end
       render json: short_url
     end
   end
