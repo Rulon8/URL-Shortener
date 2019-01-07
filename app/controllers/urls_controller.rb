@@ -79,7 +79,7 @@ class UrlsController < ApplicationController
   # URL and visit count of each of the top most visited URLs. If there
   # are less than 100 URLs stored in the system returns all of them.
   def top
-    top_urls = Url.order(:visit_count).limit(100)
+    top_urls = Url.order(visit_count: :desc).limit(100)
     render json: top_urls
   end
 
