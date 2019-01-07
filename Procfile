@@ -1,0 +1,2 @@
+web: bundle exec rails server -p $PORT -e $RACK_ENV
+release: rails db:migrate
