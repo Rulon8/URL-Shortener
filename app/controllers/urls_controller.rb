@@ -35,7 +35,7 @@ class UrlsController < ApplicationController
       render json: short_url, status: 500
     else
       # Consider ports other than 80, eg. rails default port 3000
-      if request.port == 80
+      if request.port == 80 || request.port == 443
         short_url[:short_url] = request.host + '/' + short_url[:short_url]
       else
         short_url[:short_url] = request.host + ':' + request.port.to_s + '/' + short_url[:short_url]
