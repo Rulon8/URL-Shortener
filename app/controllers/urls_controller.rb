@@ -45,7 +45,8 @@ class UrlsController < ApplicationController
   end
 
   # Checks if received short url is already stored in the database and
-  # can be used to redirect the user.
+  # can be used to redirect the user. Also adds one to the visit counter
+  # for that url.
   #
   # short_url - The short version of a URL generated previously by the
   # app.
@@ -88,7 +89,8 @@ class UrlsController < ApplicationController
   # Creates a new URL entry in the database. The entry must first be created
   # without its short URL value because this value is generated from its id,
   # and the id is assigned after creation. Then calls encode to get the new
-  # short URL value and updates the entry.
+  # short URL value and updates the entry. If the creation is successful
+  # starts a new worker process to include its title.
   #
   # orig_url - The original URL that was sent by the user and that will be
   # shortened.
@@ -103,11 +105,12 @@ class UrlsController < ApplicationController
     if new_entry.errors.messages.length > 0
       return { status: 500, errors: new_entry.errors.messages }
     else
+      TitleCrawlerWorker.perform_async(new_entry.id, orig_url)
       return { short_url: short_url }
     end
   end
 
-  # Encodes the given Base10 value using BaseX encoding, where X is the base
+  # Encodes the given value using BaseX encoding, where X is the base
   # of the encoded value, determined by the alphabet length.
   #
   # id - The value to be encoded.
