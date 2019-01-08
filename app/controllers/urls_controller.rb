@@ -79,7 +79,9 @@ class UrlsController < ApplicationController
   # Returns a JSON object that includes the title, short URL, original
   # URL and visit count of each of the top most visited URLs. If there
   # are less than 100 URLs stored in the system returns all of them,
-  # or an empty JSON if there are none.
+  # or an empty JSON if there are none. If the title for a URL has not
+  # yet been fetched, or if it doesn't exist (eg. on a 404 error), the
+  # title will be shown as "Not Available".
   def top
     top_urls = Url.order(visit_count: :desc).limit(100)
     render json: top_urls

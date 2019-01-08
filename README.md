@@ -19,7 +19,8 @@ but any database compatible with Rails should work. To change database install t
 respective gem and then update your database.yml file to match your credentials.
 
 Also, to store website titles along with their URLs, Redis and the Sidekiq gem must be installed and
-running. If not then titles will appear as "Not Available".
+running. If not then titles will appear as "Not Available". Remember to check you have all other
+dependencies installed by running `bundle install`
 
 Once installed and running you can access the API by sending requests to your local host and port,
 as defined in the Usage section.
@@ -68,4 +69,17 @@ within the system, a 404 Not Found error is returned instead.
 ### GET localhost/top.json
 Looks for the top 100 most visited URLs, in descending ordered by visit count. Returns a JSON object
 that includes the title, short URL, original URL and visit count of each of the top most visited
-URLs. If there are less than 100 URLs stored in the system returns all of them, or an empty JSON if there are none.
+URLs. If there are less than 100 URLs stored in the system returns all of them, or an empty JSON if
+there are none. If the title for a URL has not yet been fetched, or if it doesn't exist (eg. on a
+404 error), the title will be shown as "Not Available".
+
+##Known improvements
+
+This section contains a non-exhaustive list of known things that can be implemented to improve the API.
+
+- Better error handling: At the moment the code manually checks if there are any errors when saving records
+and validating them and manually generates an error message. I haven't found a better way to handle this yet but
+there should be a way to automatically recover from any errors and generate the errors.
+
+- Trailing slashes in URLs: Right now the API considers cases like https://google.com and https://google.com/
+as different URLs. Since the slash at the end is not relevant both cases could be considered as the same.
