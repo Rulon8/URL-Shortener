@@ -24,3 +24,9 @@
 
 # Ignore settings folder from RubyMine IDE
 /.idea/*
+
+# Ignore public folder (it will not be needed since we'll create our own public folder when creating our front end app)
+/public
+
+# Ignore Redis database snapshot
+dump.rdb
