@@ -1,0 +1,11 @@
+{
+  "name": "url-shortener",
+  "engines": {
+    "node": "10.15.0",
+  },
+  "scripts": {
+    "build": "cd client && npm install && npm run build && cd ..",
+    "deploy": "cp -a client/build/. public/",
+    "heroku-postbuild": "npm run build && npm run deploy"
+  }
+}
