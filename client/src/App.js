@@ -17,11 +17,17 @@ const Form = (props) => {
   )
 }
 
-/* Shows props.message with the style given by props.class */
+/* Shows a status message with the style given by props.status depending
+ * on whether URL shortening was a success or not.
+ */
 const Message = (props) => {
+  let url;
+  if (props.status === 'success') {
+    url = <a href={props.url}>{props.url}</a>;
+  }
   return (
-    <div className={props.class}>
-      {props.message}
+    <div className={props.status}>
+      {props.message} {url}
     </div>
   )
 }
@@ -33,47 +39,49 @@ const Message = (props) => {
 class Shortener extends Component {
   constructor(props) {
     super(props);
-    this.state = {shortened: 'pending', message: '', url: ''};
+    this.state = {shortened: 'pending', message: '', long_url: '', short_url: ''};
   }
   
   submitListener = (event) => {
-    console.log(this.state.url);
+    console.log(this.state.long_url);
     event.preventDefault();
     fetch('/url.json', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({url: this.state.url})
+      body: JSON.stringify({url: this.state.long_url})
     }).then((response) => {
       return response.json();
     }).then((jsonResponse) => {
       console.log(jsonResponse);
       console.log(JSON.stringify(jsonResponse));
       if (jsonResponse.hasOwnProperty('errors')) {
-        this.setState({shortened: 'failure', message: 'ERROR: Please enter a valid URL'});
+        this.setState({shortened: 'failure', message: 'ERROR: Please enter a valid URL', short_url: ''});
       } else {
-        this.setState({shortened: 'success', message: 'Your short URL is: ' + jsonResponse.short_url});
+        this.setState({shortened: 'success', message: 'Your short URL is: ', short_url: jsonResponse.short_url});
       }
     }).catch((error) => {
       console.log(error);
-      this.setState({shortened: 'failure', message: 'NETWORK ERROR: Please try again'});
+      this.setState({shortened: 'failure', message: 'NETWORK ERROR: Please try again', short_url: ''});
     });
   }
   
   textFieldListener = (event) => {
-    this.setState({url: event.target.value});
+    this.setState({long_url: event.target.value});
   }
   
   render() {
     return (
       <div>
         <Form onSubmitFunction={this.submitListener} onChangeFunction={this.textFieldListener}/>
-        <Message class={this.state.shortened} message={this.state.message}/>
+        <Message status={this.state.shortened} message={this.state.message} url={this.state.short_url}/>
       </div>
     );
   }
 }
+
+
 
 class App extends Component {
   render() {
