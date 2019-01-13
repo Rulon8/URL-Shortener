@@ -140,7 +140,7 @@ const TopTable = (props) => {
        </thead>
        <tbody>
          {props.tableData.map(function(url, index) {
-           let href = "https://" + window.location.hostname + ":8081/";
+           let href = "https://" + window.location.hostname + "/";
            return <tr>
                     <td>{url.title}</td>
                     <td>{url.original_url}</td>
