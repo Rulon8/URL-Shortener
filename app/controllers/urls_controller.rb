@@ -34,13 +34,19 @@ class UrlsController < ApplicationController
       # If there are errors show 500 error
       render json: short_url, status: 500
     else
-      # Consider ports other than 80, eg. rails default port 3000
-      if request.port == 80 || request.port == 443
-        short_url[:short_url] = 'https://' + request.host + '/' + short_url[:short_url]
+      # Return the URL with the appropiate port. In the development environment,
+      # since we are using 2 servers (one for front end and one for back end),
+      # the specific por on which Rails is running must be returned. This is not
+      # needed in production.
+      if Rails.env.production?
+        if request.port == 80 || request.port == 443
+          short_url[:short_url] = 'https://' + request.host + '/' + short_url[:short_url]
+        else
+          short_url[:short_url] = 'https://' + request.host + ':' + request.port.to_s + '/' + short_url[:short_url]
+        end
       else
-        short_url[:short_url] = 'https://' + request.host + ':' + request.port.to_s + '/' + short_url[:short_url]
+        short_url[:short_url] = 'https://' + request.host + ':' + Rack::Server.new.options[:Port] + '/' + short_url[:short_url]
       end
-      #short_url[:short_url] = 'https://' + request.host + ':8081/' + short_url[:short_url]
       render json: short_url
     end
   end
