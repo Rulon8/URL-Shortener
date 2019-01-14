@@ -125,7 +125,7 @@ const TopButton = (props) => {
 const TopTable = (props) => {
   let content;
   if (props.status === 'success') {
-    if (props.tableData.length == 0) {
+    if (props.tableData.length === 0) {
       content = 'No data available';
     } else {
       content = 
@@ -140,11 +140,10 @@ const TopTable = (props) => {
        </thead>
        <tbody>
          {props.tableData.map(function(url, index) {
-           let href = "https://" + window.location.hostname + "/";
            return <tr>
                     <td>{url.title}</td>
                     <td>{url.original_url}</td>
-                    <td><a href={href + url.short_url}>{href + url.short_url}</a></td>
+                    <td><a href={url.short_url}>{url.short_url}</a></td>
                     <td>{url.visit_count}</td>
                   </tr>;
          })}

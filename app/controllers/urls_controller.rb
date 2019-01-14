@@ -34,19 +34,7 @@ class UrlsController < ApplicationController
       # If there are errors show 500 error
       render json: short_url, status: 500
     else
-      # Return the URL with the appropiate port. In the development environment,
-      # since we are using 2 servers (one for front end and one for back end),
-      # the specific por on which Rails is running must be returned. This is not
-      # needed in production.
-      if Rails.env.production?
-        if request.port == 80 || request.port == 443
-          short_url[:short_url] = 'https://' + request.host + '/' + short_url[:short_url]
-        else
-          short_url[:short_url] = 'https://' + request.host + ':' + request.port.to_s + '/' + short_url[:short_url]
-        end
-      else
-        short_url[:short_url] = 'https://' + request.host + ':' + Rack::Server.new.options[:Port] + '/' + short_url[:short_url]
-      end
+      short_url[:short_url] = parse_url(short_url[:short_url])
       render json: short_url
     end
   end
@@ -91,7 +79,13 @@ class UrlsController < ApplicationController
   # title will be shown as "Not Available".
   def top
     top_urls = Url.order(visit_count: :desc).limit(100)
-    render json: top_urls
+    urls = top_urls
+    urls.each do |x|
+      puts x
+      puts x.short_url
+      x[:short_url] = parse_url(x[:short_url])
+    end
+    render json: urls
   end
 
   private
@@ -142,5 +136,32 @@ class UrlsController < ApplicationController
       id = id / base
     end
     return short_url.reverse
+  end
+  
+  # Builds a new URL from the short_url identifier. In the development environment,
+  # since we are using 2 servers (one for front end and one for back end), the
+  # specific port on which Rails is running must be returned (8081 by default).
+  # This is not needed in production. In production environment returns the same
+  # port of the original request to the server.
+  #
+  # short_url - The id representing a short URL.
+  #
+  # Examples
+  #
+  #   parse_url('b')
+  #   # => 'https://myHost:myPort/b'
+  #
+  def parse_url(short_url)
+    if Rails.env.production?
+      if request.port == 80 || request.port == 443
+        short_url = 'https://' + request.host + '/' + short_url
+      else
+        short_url = 'https://' + request.host + ':' + request.port.to_s + '/' + short_url
+      end
+    else
+      puts Rails::Server::Options.new.parse!(ARGV)[:Port]
+      short_url = 'https://' + request.host + ':8081/' + short_url
+    end
+    return short_url
   end
 end
