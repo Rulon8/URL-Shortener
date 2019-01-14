@@ -126,7 +126,7 @@ const TopTable = (props) => {
   let content;
   if (props.status === 'success') {
     if (props.tableData.length === 0) {
-      content = 'No data available';
+      content = <p className='text top-table'>No data available</p>;
     } else {
       content = 
       <Table className='top-table' striped hover responsive bordered>
