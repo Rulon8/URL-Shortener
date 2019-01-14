@@ -23,14 +23,14 @@ shortens URLs and stores them to be referenced in the future. The second is a Re
 works as a web interface for the API.
 
 To run the API in your local computer you need Ruby and Ruby on Rails. The versions mentioned above 
-are the one with which the API is tested, it may work with other versions but it is untested. By
+are the ones with which the API is tested, it may work with other versions but they are untested. By
 default the API is configured to use Postgresql with user `ubuntu` and the default password,
-but any database compatible with Rails should work. To change database install the
+but any database supported by Rails should work. To change database install the
 respective gem and then update your database.yml file to match your credentials.
 
 Also, to store website titles along with their URLs, Redis and the Sidekiq gem must be installed and
 running. If not then titles will appear as "Not Available". Remember to check you have all other
-dependencies installed by running `bundle install`
+dependencies installed by running `bundle install`.
 
 Once installed and running you can access the API by sending requests to your local host and port,
 as defined in the Usage section.
@@ -40,7 +40,7 @@ In order to have both apps running together, Node is configured with a proxy to 
 to the port where Rails is running on. Be sure to have the correct configuration, such as the
 one described in the Usage section, or you might end up with 404 errors.
 
-A live demo of the app can be found on heroku [here](https://url-shortener-42280.herokuapp.com/).
+A live demo of the app can be found on Heroku [here](https://url-shortener-42280.herokuapp.com/).
 
 ## Usage
 
@@ -57,7 +57,7 @@ api: bundle exec rails s -b '0.0.0.0' -p '8081'
 
 The first command starts the Node server. It must be started from the client folder inside the Rails
 project files, and you can choose a port for it to run on. It doesn't matter which port you choose as
-long as it is not `8081` since that's the one the Rails server will use.
+long as it is not `8081` since that's the one the Rails server will be using.
 
 The second command starts the Rails server. You can choose whatever value you want for your host in
 the `-b` option, but `-p '8081'` is mandatory at the moment. The reason is I haven't found a reliable
@@ -107,7 +107,7 @@ regex `[a-zA-Z0-9]+`, or the call won't be recognized. If `your_short_url` is va
 within the system, a 404 Not Found error is returned instead.
 
 ### GET localhost:8081/top.json
-Looks for the top 100 most visited URLs, in descending ordered by visit count. Returns a JSON object
+Looks for the top 100 most visited URLs, in descending order by visit count. Returns a JSON object
 that includes the title, short URL, original URL and visit count of each of the top most visited
 URLs. If there are less than 100 URLs stored in the system returns all of them, or an empty JSON if
 there are none. If the title for a URL has not yet been fetched, or if it doesn't exist (eg. on a
@@ -119,7 +119,7 @@ This section contains a non-exhaustive list of known things that can be implemen
 
 - Better error handling: At the moment the code manually checks if there are any errors when saving records
 and validating them and manually generates an error message. I haven't found a better way to handle this yet but
-there should be a way to automatically recover from any errors and generate the errors.
+there should be a way to automatically recover from any errors and generate custom error messages.
 
 - Trailing slashes in URLs: Right now the API considers cases like https://google.com and https://google.com/
 as different URLs. Since the slash at the end is not relevant both cases could be considered as the same.

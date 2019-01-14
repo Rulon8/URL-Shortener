@@ -12,13 +12,13 @@ class UrlsController < ApplicationController
   # Examples
   #
   #   if successful
-  #   # => {"short_url": "localhost/eDj3k"}
+  #   # => {"short_url": "https://myHost:myPort/eDj3k"}
   #
   #   if unsuccessful
   #   # => {"status":500,"errors":{"original_url":["invalid original url"]}}
   #
   # Returns a JSON object with either the stored or the new shortened
-  # version of the URL with the following syntax: {short_url: your_url}.
+  # version of the URL with the following syntax: {short_url: your_new_url}.
   # Alternatively, returns a JSON object with errors.
   def new
     orig_url = params[:url]
