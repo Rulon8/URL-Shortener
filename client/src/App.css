@@ -30,3 +30,12 @@
     transform: rotate(360deg);
   }
 }
+
+.title {
+  color: #333;
+  font-size: 50px;
+  font-weight: 300;
+  text-align: center;
+  margin-top: 10%;
+  margin-bottom: 5%;
+}
