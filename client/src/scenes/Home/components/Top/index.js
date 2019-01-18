@@ -1,3 +1,4 @@
+import Api from 'services/api.js';
 import TopButton from './components/TopButton';
 import TopTable from './components/TopTable';
 import Row from 'react-bootstrap/lib/Row.js';
@@ -16,14 +17,11 @@ class Top extends Component {
   }
   
   buttonClickListener = () => {
-    fetch('/top.json')
-    .then((response) => {
-      return response.json();
-    }).then((jsonResponse) => {
-      console.log(jsonResponse);
-      this.setState({status: 'success', data: jsonResponse});
-    }).catch((error) => {
-      console.log(error);
+    let api = new Api();
+    api.getTop().then((apiResponse) => {
+      if (!apiResponse.hasOwnProperty('errors')) {
+        this.setState({status: 'success', data: apiResponse});
+      }
     });
   }
   

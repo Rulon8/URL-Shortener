@@ -1,9 +1,11 @@
+import Api from 'services/api.js';
 import ShortenForm from './components/ShortenForm';
 import ShortenMessage from './components/ShortenMessage';
 import Row from 'react-bootstrap/lib/Row.js';
 import Col from 'react-bootstrap/lib/Col.js';
 import React, { Component } from 'react';
-/* Receives the user input through the Form component and call the API using a POST request
+
+/* Receives the user input through the Form component and calls the API using a POST request
  * with the input. If the API returns any error it displays an error message, otherwise
  * displays a message with the shortened URL.
  */
@@ -14,27 +16,15 @@ class Shortener extends Component {
   }
   
   submitListener = (event) => {
-    console.log(this.state.long_url);
     event.preventDefault();
-    fetch('/url.json', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({url: this.state.long_url})
-    }).then((response) => {
-      return response.json();
-    }).then((jsonResponse) => {
-      console.log(jsonResponse);
-      console.log(JSON.stringify(jsonResponse));
-      if (jsonResponse.hasOwnProperty('errors')) {
+    let api = new Api();
+    api.postUrl(this.state.long_url)
+    .then((apiResponse) => {
+      if (apiResponse.hasOwnProperty('errors')) {
         this.setState({shortened: 'failure', message: 'An error has occured, please try again', short_url: ''});
       } else {
-        this.setState({shortened: 'success', message: 'Your short URL is: ', short_url: jsonResponse.short_url});
+        this.setState({shortened: 'success', message: 'Your short URL is: ', short_url: apiResponse.short_url});
       }
-    }).catch((error) => {
-      console.log(error);
-      this.setState({shortened: 'failure', message: 'An error has occured, please try again', short_url: ''});
     });
   }
   
